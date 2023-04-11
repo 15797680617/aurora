@@ -29,7 +29,7 @@ public final class AuroraMethodFactory {
         return auroraMethod;
     }
 
-    private static AuroraMethod createAuroraMethod(Mapper mapper, Method method) {
+    private static <V> AuroraMethod<V> createAuroraMethod(Mapper mapper, Method method) {
         return mapper.getConfiguration().getAuroraMethodParser().parse(mapper, method);
     }
 }

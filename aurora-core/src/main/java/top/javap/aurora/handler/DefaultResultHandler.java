@@ -1,8 +1,8 @@
 package top.javap.aurora.handler;
 
 import com.alibaba.fastjson.JSON;
-import top.javap.aurora.config.AuroraConfiguration;
 import top.javap.aurora.convert.Converter;
+import top.javap.aurora.convert.ConverterFactory;
 import top.javap.aurora.domain.HttpResponse;
 import top.javap.aurora.exception.AuroraException;
 import top.javap.aurora.executor.AuroraFuture;
@@ -16,10 +16,10 @@ import java.util.Objects;
  **/
 public class DefaultResultHandler implements ResultHandler {
 
-    private final AuroraConfiguration auroraConfiguration;
+    private final ConverterFactory converterFactory;
 
-    public DefaultResultHandler(AuroraConfiguration auroraConfiguration) {
-        this.auroraConfiguration = auroraConfiguration;
+    public DefaultResultHandler(ConverterFactory converterFactory) {
+        this.converterFactory = converterFactory;
     }
 
     @Override
@@ -33,7 +33,7 @@ public class DefaultResultHandler implements ResultHandler {
         if (resultType.isAssignableFrom(AuroraFuture.class)) {
             System.err.println(resultType);
         }
-        Converter<String, T> converter = auroraConfiguration.getConverterFactory().getConverter(String.class, resultType);
+        Converter<String, T> converter = converterFactory.getConverter(String.class, resultType);
         if (Objects.nonNull(converter)) {
             return converter.convert(response.getBody());
         }

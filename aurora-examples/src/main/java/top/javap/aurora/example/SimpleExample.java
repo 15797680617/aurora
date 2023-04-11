@@ -17,8 +17,8 @@ public class SimpleExample {
     public static void main(String[] args) throws Exception {
         GaoDeMapper mapper = Aurora.getInstance(GaoDeMapper.class);
         sync(mapper);
-        future(mapper);
-        callback(mapper);
+//        future(mapper);
+//        callback(mapper);
     }
 
     static void callback(GaoDeMapper mapper) {

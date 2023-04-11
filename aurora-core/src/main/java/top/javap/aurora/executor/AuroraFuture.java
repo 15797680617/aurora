@@ -5,8 +5,6 @@ import top.javap.aurora.config.AuroraConfiguration;
 import top.javap.aurora.domain.HttpResponse;
 import top.javap.aurora.exception.AuroraException;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 
@@ -19,9 +17,9 @@ public class AuroraFuture<V> extends FutureTask<HttpResponse> {
 
     private Class<V> returnType;
 
-    public AuroraFuture(@NotNull Callable callable, Type returnType) {
+    public AuroraFuture(@NotNull Callable callable, Class<V> returnType) {
         super(callable);
-        this.returnType = (Class<V>) ((ParameterizedType) returnType).getActualTypeArguments()[0];
+        this.returnType = returnType;
     }
 
     public <V> V getResult() {

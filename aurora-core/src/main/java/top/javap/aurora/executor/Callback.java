@@ -7,9 +7,9 @@ import top.javap.aurora.exception.AuroraException;
  * @description:
  * @date: 2023/4/10
  **/
-public abstract class Callback<T> {
+public abstract class Callback<V> {
 
-    public void onSuccess(T result) {
+    public void onSuccess(V result) {
 
     }
 

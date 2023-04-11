@@ -12,15 +12,15 @@ import top.javap.aurora.executor.Callback;
  * @Date: 2023/4/4 19:29
  * @Description:
  */
-@Mapper
+@Mapper(baseUrl = "https://restapi.amap.com/v3")
 public interface GaoDeMapper {
 
-    @Get("https://restapi.amap.com/v3/weather/weatherInfo")
+    @Get("/weather/weatherInfo")
     WeatherErrorResult sync(@Param("key") String key, @Param("city") int city);
 
-    @Get("https://restapi.amap.com/v3/weather/weatherInfo")
+    @Get("/weather/weatherInfo")
     AuroraFuture<WeatherErrorResult> future(@Param("key") String key, @Param("city") int city);
 
-    @Get("https://restapi.amap.com/v3/weather/weatherInfo")
+    @Get("/weather/weatherInfo")
     void callback(@Param("key") String key, @Param("city") int city, Callback<WeatherErrorResult> cb);
 }

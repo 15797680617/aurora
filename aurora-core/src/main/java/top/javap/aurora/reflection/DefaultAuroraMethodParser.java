@@ -7,12 +7,14 @@ import top.javap.aurora.annotation.Post;
 import top.javap.aurora.annotation.RequestBody;
 import top.javap.aurora.domain.Mapper;
 import top.javap.aurora.enums.InvokeMode;
+import top.javap.aurora.exception.AuroraException;
 import top.javap.aurora.executor.AuroraFuture;
 import top.javap.aurora.executor.Callback;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.lang.reflect.ParameterizedType;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -25,15 +27,30 @@ import java.util.Objects;
 public class DefaultAuroraMethodParser implements AuroraMethodParser {
 
     @Override
-    public AuroraMethod parse(Mapper mapper, Method method) {
-        AuroraMethod auroraMethod = new AuroraMethod(mapper, method);
+    public <V> AuroraMethod<V> parse(Mapper mapper, Method method) {
+        AuroraMethod<V> auroraMethod = new AuroraMethod(mapper, method);
         auroraMethod.setParamIndex(buildParamIndex(method));
         auroraMethod.setHeaderIndex(buildHeaderIndex(method));
         auroraMethod.setBodyIndex(getBodyIndex(method));
         auroraMethod.setCallbackIndex(getCallbackIndex(method));
         auroraMethod.setUrl(getUrl(method));
         auroraMethod.setInvokeMode(getInvokeMode(method));
+        auroraMethod.setResultType(getResultType(auroraMethod, method));
         return auroraMethod;
+    }
+
+    private <V> Class<V> getResultType(AuroraMethod auroraMethod, Method method) {
+        switch (auroraMethod.getInvokeMode()) {
+            case SYNC:
+                return (Class<V>) method.getReturnType();
+            case FUTURE:
+                return (Class<V>) ((ParameterizedType) method.getGenericReturnType()).getActualTypeArguments()[0];
+            case CALLBACK:
+                return (Class<V>) ((ParameterizedType) method.getParameters()[auroraMethod.getCallbackIndex()].getParameterizedType())
+                        .getActualTypeArguments()[0];
+            default:
+                throw new AuroraException("invalid invokeMode:" + auroraMethod.getInvokeMode());
+        }
     }
 
     private InvokeMode getInvokeMode(Method method) {
@@ -47,12 +64,13 @@ public class DefaultAuroraMethodParser implements AuroraMethodParser {
     }
 
     private String getUrl(Method method) {
+        String baseUrl = method.getDeclaringClass().getAnnotation(top.javap.aurora.annotation.Mapper.class).baseUrl();
         for (Annotation annotation : method.getAnnotations()) {
             if (annotation instanceof Get) {
-                return ((Get) annotation).value();
+                return baseUrl + ((Get) annotation).value();
             }
             if (annotation instanceof Post) {
-                return ((Post) annotation).value();
+                return baseUrl + ((Post) annotation).value();
             }
         }
         return null;

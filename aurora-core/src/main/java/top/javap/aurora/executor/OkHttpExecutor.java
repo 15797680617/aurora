@@ -14,7 +14,6 @@ import top.javap.aurora.exception.AuroraException;
 import top.javap.aurora.util.Maps;
 
 import java.io.IOException;
-import java.lang.reflect.ParameterizedType;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -27,7 +26,7 @@ import java.util.concurrent.TimeUnit;
  **/
 public class OkHttpExecutor implements HttpExecutor {
     private final AuroraConfiguration configuration;
-    private final OkHttpClient httpClient = new OkHttpClient();
+    private final OkHttpClient httpClient;
     private final ExecutorService executorService;
 
     public OkHttpExecutor(AuroraConfiguration configuration) {
@@ -39,21 +38,22 @@ public class OkHttpExecutor implements HttpExecutor {
                 TimeUnit.SECONDS,
                 new ArrayBlockingQueue<>(configuration.getQueueSize())
         );
+        httpClient = new OkHttpClient.Builder()
+                .connectTimeout(configuration.getConnectTimeout(), TimeUnit.MILLISECONDS)
+                .writeTimeout(configuration.getWriteTimeout(), TimeUnit.MILLISECONDS)
+                .readTimeout(configuration.getReadTimeout(), TimeUnit.MILLISECONDS)
+                .build();
     }
 
     @Override
     public HttpResponse execute(AuroraRequest request) throws IOException {
         Response response = httpClient.newCall(buildRequest(request)).execute();
-        HttpResponse httpResponse = new HttpResponse();
-        httpResponse.setBody(response.body().string());
-        httpResponse.setCode(response.code());
-        httpResponse.setMessage(response.message());
-        return httpResponse;
+        return toHttpResponse(response);
     }
 
     @Override
     public AuroraFuture submit(AuroraRequest request) {
-        AuroraFuture future = new AuroraFuture(() -> execute(request), request.getReturnType());
+        AuroraFuture future = new AuroraFuture(() -> execute(request), request.getResultType());
         executorService.submit(future);
         return future;
     }
@@ -68,17 +68,12 @@ public class OkHttpExecutor implements HttpExecutor {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                HttpResponse httpResponse = new HttpResponse();
-                httpResponse.setBody(response.body().string());
-                httpResponse.setCode(response.code());
-                httpResponse.setMessage(response.message());
-                callback.onSuccess((T) configuration.getResultHandler().handle(httpResponse,
-                        ((Class) ((ParameterizedType) request.getReturnType()).getActualTypeArguments()[0])));
+                callback.onSuccess((T) configuration.getResultHandler().handle(toHttpResponse(response), request.getResultType()));
             }
         });
     }
 
-    private Request buildRequest(AuroraRequest request) {
+    private <V> Request buildRequest(AuroraRequest<V> request) {
         final Request.Builder builder = new Request.Builder().url(request.getFullUrl());
         switch (request.getMethod()) {
             case GET:
@@ -94,5 +89,13 @@ public class OkHttpExecutor implements HttpExecutor {
             request.getHeaders().entrySet().forEach(e -> builder.header(e.getKey(), e.getValue().toString()));
         }
         return builder.build();
+    }
+
+    private HttpResponse toHttpResponse(Response response) throws IOException {
+        HttpResponse httpResponse = new HttpResponse();
+        httpResponse.setBody(response.body().string());
+        httpResponse.setCode(response.code());
+        httpResponse.setMessage(response.message());
+        return httpResponse;
     }
 }

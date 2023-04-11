@@ -11,6 +11,6 @@ import java.lang.reflect.Method;
  */
 public interface AuroraMethodParser {
 
-    AuroraMethod parse(Mapper mapper, Method method);
+    <V> AuroraMethod<V> parse(Mapper mapper, Method method);
 
 }

@@ -12,9 +12,9 @@ import java.io.IOException;
  **/
 public interface HttpExecutor {
 
-    HttpResponse execute(AuroraRequest request) throws IOException;
+    <V> HttpResponse execute(AuroraRequest<V> request) throws IOException;
 
-    AuroraFuture submit(AuroraRequest request);
+    <V> AuroraFuture<V> submit(AuroraRequest<V> request);
 
-    <T> void submit(AuroraRequest request, Callback<T> callback);
+    <V> void submit(AuroraRequest request, Callback<V> callback);
 }

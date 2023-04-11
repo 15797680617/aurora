@@ -3,7 +3,7 @@ package top.javap.aurora.config;
 import top.javap.aurora.convert.ConverterFactory;
 import top.javap.aurora.enums.HttpClientEnum;
 import top.javap.aurora.executor.HttpExecutor;
-import top.javap.aurora.executor.OkHttpExecutor;
+import top.javap.aurora.executor.HttpExecutorFactory;
 import top.javap.aurora.handler.DefaultResultHandler;
 import top.javap.aurora.handler.ResultHandler;
 import top.javap.aurora.reflection.AuroraMethodParser;
@@ -22,11 +22,16 @@ public final class AuroraConfiguration {
     private int keepAliveSeconds = 60;
     private int queueSize = 1000;
 
+    /********http相关**********/
+    private long connectTimeout = 5000L;
+    private long writeTimeout = 5000L;
+    private long readTimeout = 5000L;
+
+
     private HttpClientEnum httpClientEnum = HttpClientEnum.OKHTTP;
     private AuroraMethodParser auroraMethodParser = new DefaultAuroraMethodParser();
-    private ResultHandler resultHandler = new DefaultResultHandler(this);
     private ConverterFactory converterFactory = new ConverterFactory();
-    private HttpExecutor httpExecutor = new OkHttpExecutor(this);
+    private ResultHandler resultHandler = new DefaultResultHandler(this.getConverterFactory());
 
     public HttpClientEnum getHttpClientEnum() {
         return httpClientEnum;
@@ -53,7 +58,7 @@ public final class AuroraConfiguration {
     }
 
     public HttpExecutor getHttpExecutor() {
-        return httpExecutor;
+        return HttpExecutorFactory.getHttpExecutor(httpClientEnum, this);
     }
 
     public static AuroraConfiguration configuration() {
@@ -74,5 +79,17 @@ public final class AuroraConfiguration {
 
     public int getQueueSize() {
         return queueSize;
+    }
+
+    public long getConnectTimeout() {
+        return connectTimeout;
+    }
+
+    public long getWriteTimeout() {
+        return writeTimeout;
+    }
+
+    public long getReadTimeout() {
+        return readTimeout;
     }
 }

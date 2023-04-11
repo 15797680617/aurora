@@ -13,7 +13,6 @@ import top.javap.aurora.util.Assert;
 import top.javap.aurora.util.MethodUtil;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 import java.util.Map;
 
 /**
@@ -21,13 +20,12 @@ import java.util.Map;
  * @description:
  * @date: 2023/4/10
  **/
-public class AuroraMethod {
+public class AuroraMethod<V> {
 
     private final Mapper mapper;
     private final Method method;
     private final HttpMethod httpMethod;
-    private Class<?> returnType;
-    private Type genericReturnType;
+    private Class<V> resultType;
     private Map<Integer, String> paramIndex;
     private Map<Integer, String> headerIndex;
     private int bodyIndex = -1;
@@ -39,8 +37,6 @@ public class AuroraMethod {
     public AuroraMethod(Mapper mapper, Method method) {
         this.mapper = mapper;
         this.method = method;
-        this.returnType = method.getReturnType();
-        this.genericReturnType = method.getGenericReturnType();
         Assert.notNull(httpMethod = MethodUtil.getHttpMethod(method), "invalid HttpMethod:" + method);
     }
 
@@ -58,13 +54,22 @@ public class AuroraMethod {
 
     void setCallbackIndex(int callbackIndex) {
         this.callbackIndex = callbackIndex;
-        if (callbackIndex > -1) {
-            this.genericReturnType = method.getParameters()[callbackIndex].getParameterizedType();
-        }
+    }
+
+    public int getCallbackIndex() {
+        return callbackIndex;
     }
 
     void setInvokeMode(InvokeMode invokeMode) {
         this.invokeMode = invokeMode;
+    }
+
+    public InvokeMode getInvokeMode() {
+        return invokeMode;
+    }
+
+    public void setResultType(Class<V> resultType) {
+        this.resultType = resultType;
     }
 
     void setUrl(String url) {
@@ -73,15 +78,16 @@ public class AuroraMethod {
 
     public Object invoke(Object[] args) {
         final HttpExecutor httpExecutor = mapper.getConfiguration().getHttpExecutor();
+        final AuroraRequest<V> request = buildAuroraRequest(args);
         try {
             if (InvokeMode.SYNC.equals(invokeMode)) {
-                HttpResponse httpResponse = httpExecutor.execute(buildAuroraRequest(args));
-                return mapper.getConfiguration().getResultHandler().handle(httpResponse, returnType);
+                HttpResponse httpResponse = httpExecutor.execute(request);
+                return mapper.getConfiguration().getResultHandler().handle(httpResponse, resultType);
             } else if (InvokeMode.FUTURE.equals(invokeMode)) {
-                return httpExecutor.submit(buildAuroraRequest(args));
+                return httpExecutor.submit(request);
             } else if (InvokeMode.CALLBACK.equals(invokeMode)) {
                 Callback cb = (Callback) args[callbackIndex];
-                httpExecutor.submit(buildAuroraRequest(args), cb);
+                httpExecutor.submit(request, cb);
                 return null;
             } else {
                 throw new AuroraException("invalid invoke mode:" + invokeMode);
@@ -91,9 +97,9 @@ public class AuroraMethod {
         }
     }
 
-    private AuroraRequest buildAuroraRequest(Object[] args) {
-        AuroraRequest request = new AuroraRequest(url, httpMethod);
-        request.setReturnType(genericReturnType);
+    private AuroraRequest<V> buildAuroraRequest(Object[] args) {
+        AuroraRequest<V> request = new AuroraRequest(url, httpMethod);
+        request.setResultType(resultType);
         paramIndex.entrySet().forEach(e -> {
             request.getParams().put(e.getValue(), args[e.getKey()]);
         });
