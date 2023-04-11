@@ -2,6 +2,8 @@ package top.javap.aurora.config;
 
 import top.javap.aurora.convert.ConverterFactory;
 import top.javap.aurora.enums.HttpClientEnum;
+import top.javap.aurora.executor.HttpExecutor;
+import top.javap.aurora.executor.OkHttpExecutor;
 import top.javap.aurora.handler.DefaultResultHandler;
 import top.javap.aurora.handler.ResultHandler;
 import top.javap.aurora.reflection.AuroraMethodParser;
@@ -18,6 +20,7 @@ public final class AuroraConfiguration {
     private AuroraMethodParser auroraMethodParser = new DefaultAuroraMethodParser();
     private ResultHandler resultHandler = new DefaultResultHandler(this);
     private ConverterFactory converterFactory = new ConverterFactory();
+    private HttpExecutor httpExecutor = new OkHttpExecutor();
 
     /********线程池相关**********/
     private int corePoolSize = Runtime.getRuntime().availableProcessors() * 2 + 1;
@@ -45,6 +48,10 @@ public final class AuroraConfiguration {
 
     public ConverterFactory getConverterFactory() {
         return converterFactory;
+    }
+
+    public HttpExecutor getHttpExecutor() {
+        return httpExecutor;
     }
 
     public static AuroraConfiguration configuration() {
