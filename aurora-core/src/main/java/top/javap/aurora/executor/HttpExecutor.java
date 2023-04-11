@@ -14,7 +14,7 @@ public interface HttpExecutor {
 
     HttpResponse execute(AuroraRequest request) throws IOException;
 
-    <V> AuroraFuture<V> submit(AuroraRequest request);
+    AuroraFuture submit(AuroraRequest request);
 
     <T> void submit(AuroraRequest request, Callback<T> callback);
 }

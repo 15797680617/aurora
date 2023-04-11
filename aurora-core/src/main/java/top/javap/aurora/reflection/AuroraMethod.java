@@ -5,12 +5,15 @@ import top.javap.aurora.domain.AuroraRequest;
 import top.javap.aurora.domain.HttpResponse;
 import top.javap.aurora.domain.Mapper;
 import top.javap.aurora.enums.HttpMethod;
+import top.javap.aurora.enums.InvokeMode;
 import top.javap.aurora.exception.AuroraException;
-import top.javap.aurora.executor.OkHttpExecutor;
+import top.javap.aurora.executor.Callback;
+import top.javap.aurora.executor.HttpExecutor;
 import top.javap.aurora.util.Assert;
 import top.javap.aurora.util.MethodUtil;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.Map;
 
 /**
@@ -23,18 +26,21 @@ public class AuroraMethod {
     private final Mapper mapper;
     private final Method method;
     private final HttpMethod httpMethod;
-    private final Class<?> returnType;
+    private Class<?> returnType;
+    private Type genericReturnType;
     private Map<Integer, String> paramIndex;
     private Map<Integer, String> headerIndex;
     private int bodyIndex = -1;
     private int callbackIndex = -1;
     private boolean async = false;
     private String url;
+    private InvokeMode invokeMode;
 
     public AuroraMethod(Mapper mapper, Method method) {
         this.mapper = mapper;
         this.method = method;
         this.returnType = method.getReturnType();
+        this.genericReturnType = method.getGenericReturnType();
         Assert.notNull(httpMethod = MethodUtil.getHttpMethod(method), "invalid HttpMethod:" + method);
     }
 
@@ -52,11 +58,13 @@ public class AuroraMethod {
 
     void setCallbackIndex(int callbackIndex) {
         this.callbackIndex = callbackIndex;
-        this.setAsync(callbackIndex > -1);
+        if (callbackIndex > -1) {
+            this.genericReturnType = method.getParameters()[callbackIndex].getParameterizedType();
+        }
     }
 
-    void setAsync(boolean async) {
-        this.async = async;
+    void setInvokeMode(InvokeMode invokeMode) {
+        this.invokeMode = invokeMode;
     }
 
     void setUrl(String url) {
@@ -64,9 +72,20 @@ public class AuroraMethod {
     }
 
     public Object invoke(Object[] args) {
+        final HttpExecutor httpExecutor = mapper.getConfiguration().getHttpExecutor();
         try {
-            HttpResponse httpResponse = new OkHttpExecutor().execute(buildAuroraRequest(args));
-            return mapper.getConfiguration().getResultHandler().handle(httpResponse, returnType);
+            if (InvokeMode.SYNC.equals(invokeMode)) {
+                HttpResponse httpResponse = httpExecutor.execute(buildAuroraRequest(args));
+                return mapper.getConfiguration().getResultHandler().handle(httpResponse, returnType);
+            } else if (InvokeMode.FUTURE.equals(invokeMode)) {
+                return httpExecutor.submit(buildAuroraRequest(args));
+            } else if (InvokeMode.CALLBACK.equals(invokeMode)) {
+                Callback cb = (Callback) args[callbackIndex];
+                httpExecutor.submit(buildAuroraRequest(args), cb);
+                return null;
+            } else {
+                throw new AuroraException("invalid invoke mode:" + invokeMode);
+            }
         } catch (Exception e) {
             throw new AuroraException("Aurora Exception:", e);
         }
@@ -74,6 +93,7 @@ public class AuroraMethod {
 
     private AuroraRequest buildAuroraRequest(Object[] args) {
         AuroraRequest request = new AuroraRequest(url, httpMethod);
+        request.setReturnType(genericReturnType);
         paramIndex.entrySet().forEach(e -> {
             request.getParams().put(e.getValue(), args[e.getKey()]);
         });

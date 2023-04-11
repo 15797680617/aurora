@@ -2,6 +2,7 @@ package top.javap.aurora.domain;
 
 import top.javap.aurora.enums.HttpMethod;
 
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,8 +18,7 @@ public class AuroraRequest {
     private Map<String, Object> params = new HashMap<>();
     private Map<String, Object> headers = new HashMap<>();
     private String body;
-    private boolean async;
-
+    private Type returnType;
 
     public AuroraRequest(String url, HttpMethod method) {
         this.url = url;
@@ -55,6 +55,14 @@ public class AuroraRequest {
 
     public void setBody(String body) {
         this.body = body;
+    }
+
+    public Type getReturnType() {
+        return returnType;
+    }
+
+    public void setReturnType(Type returnType) {
+        this.returnType = returnType;
     }
 
     public String getFullUrl() {

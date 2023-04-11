@@ -6,6 +6,8 @@ import top.javap.aurora.annotation.Param;
 import top.javap.aurora.annotation.Post;
 import top.javap.aurora.annotation.RequestBody;
 import top.javap.aurora.domain.Mapper;
+import top.javap.aurora.enums.InvokeMode;
+import top.javap.aurora.executor.AuroraFuture;
 import top.javap.aurora.executor.Callback;
 
 import java.lang.annotation.Annotation;
@@ -30,7 +32,18 @@ public class DefaultAuroraMethodParser implements AuroraMethodParser {
         auroraMethod.setBodyIndex(getBodyIndex(method));
         auroraMethod.setCallbackIndex(getCallbackIndex(method));
         auroraMethod.setUrl(getUrl(method));
+        auroraMethod.setInvokeMode(getInvokeMode(method));
         return auroraMethod;
+    }
+
+    private InvokeMode getInvokeMode(Method method) {
+        if (getCallbackIndex(method) > -1) {
+            return InvokeMode.CALLBACK;
+        }
+        if (method.getReturnType().isAssignableFrom(AuroraFuture.class)) {
+            return InvokeMode.FUTURE;
+        }
+        return InvokeMode.SYNC;
     }
 
     private String getUrl(Method method) {
