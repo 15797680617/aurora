@@ -7,6 +7,7 @@ import top.javap.aurora.example.result.WeatherErrorResult;
 import top.javap.aurora.exception.AuroraException;
 import top.javap.aurora.executor.AuroraFuture;
 import top.javap.aurora.executor.Callback;
+import top.javap.aurora.interceptor.LogInterceptor;
 
 /**
  * @author: pch
@@ -15,8 +16,10 @@ import top.javap.aurora.executor.Callback;
  **/
 public class SimpleExample {
     public static void main(String[] args) throws Exception {
+        Aurora.config().setCorePoolSize(16);
+        Aurora.config().interceptorChain().addInterceptor(new LogInterceptor());
         GaoDeMapper mapper = Aurora.getInstance(GaoDeMapper.class);
-        sync(mapper);
+//        sync(mapper);
 //        future(mapper);
 //        callback(mapper);
     }

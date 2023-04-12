@@ -1,7 +1,7 @@
 package top.javap.aurora.executor;
 
 import top.javap.aurora.domain.AuroraRequest;
-import top.javap.aurora.domain.HttpResponse;
+import top.javap.aurora.domain.AuroraResponse;
 
 import java.io.IOException;
 
@@ -12,9 +12,9 @@ import java.io.IOException;
  **/
 public interface HttpExecutor {
 
-    <V> HttpResponse execute(AuroraRequest<V> request) throws IOException;
+    <V> AuroraResponse execute(AuroraRequest<V> request) throws IOException;
 
     <V> AuroraFuture<V> submit(AuroraRequest<V> request);
 
-    <V> void submit(AuroraRequest request, Callback<V> callback);
+    <V> void submit(AuroraRequest<V> request, Callback<V> callback);
 }

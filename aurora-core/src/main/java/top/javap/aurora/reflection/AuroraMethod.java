@@ -2,7 +2,7 @@ package top.javap.aurora.reflection;
 
 import com.alibaba.fastjson.JSON;
 import top.javap.aurora.domain.AuroraRequest;
-import top.javap.aurora.domain.HttpResponse;
+import top.javap.aurora.domain.AuroraResponse;
 import top.javap.aurora.domain.Mapper;
 import top.javap.aurora.enums.HttpMethod;
 import top.javap.aurora.enums.InvokeMode;
@@ -79,22 +79,30 @@ public class AuroraMethod<V> {
     public Object invoke(Object[] args) {
         final HttpExecutor httpExecutor = mapper.getConfiguration().getHttpExecutor();
         final AuroraRequest<V> request = buildAuroraRequest(args);
-        try {
-            if (InvokeMode.SYNC.equals(invokeMode)) {
-                HttpResponse httpResponse = httpExecutor.execute(request);
-                return mapper.getConfiguration().getResultHandler().handle(httpResponse, resultType);
-            } else if (InvokeMode.FUTURE.equals(invokeMode)) {
-                return httpExecutor.submit(request);
-            } else if (InvokeMode.CALLBACK.equals(invokeMode)) {
-                Callback cb = (Callback) args[callbackIndex];
-                httpExecutor.submit(request, cb);
-                return null;
-            } else {
-                throw new AuroraException("invalid invoke mode:" + invokeMode);
+        if (triggerBefore(request, args)) {
+            try {
+                if (InvokeMode.SYNC.equals(invokeMode)) {
+                    AuroraResponse auroraResponse = httpExecutor.execute(request);
+                    return mapper.getConfiguration().getResultHandler().handle(auroraResponse, resultType);
+                } else if (InvokeMode.FUTURE.equals(invokeMode)) {
+                    return httpExecutor.submit(request);
+                } else if (InvokeMode.CALLBACK.equals(invokeMode)) {
+                    Callback cb = (Callback) args[callbackIndex];
+                    httpExecutor.submit(request, cb);
+                    return null;
+                } else {
+                    throw new AuroraException("invalid invoke mode:" + invokeMode);
+                }
+            } catch (Exception e) {
+                throw new AuroraException("Aurora Exception:", e);
             }
-        } catch (Exception e) {
-            throw new AuroraException("Aurora Exception:", e);
+        } else {
+            return null;
         }
+    }
+
+    private boolean triggerBefore(AuroraRequest<V> request, Object[] args) {
+        return mapper.getConfiguration().interceptorChain().before(this, request, args);
     }
 
     private AuroraRequest<V> buildAuroraRequest(Object[] args) {

@@ -1,15 +1,19 @@
 package top.javap.aurora.domain;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author: pch
  * @description:
  * @date: 2023/3/23
  **/
-public class HttpResponse {
+public class AuroraResponse {
 
     private String body;
     private String message;
     private int code;
+    private final Map<String, String> headers = new HashMap<>();
 
     public String getBody() {
         return body;
@@ -33,5 +37,9 @@ public class HttpResponse {
 
     public void setCode(int code) {
         this.code = code;
+    }
+
+    public Map<String, String> getHeaders() {
+        return headers;
     }
 }

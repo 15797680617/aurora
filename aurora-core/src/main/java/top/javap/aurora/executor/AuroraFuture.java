@@ -2,7 +2,7 @@ package top.javap.aurora.executor;
 
 import org.jetbrains.annotations.NotNull;
 import top.javap.aurora.config.AuroraConfiguration;
-import top.javap.aurora.domain.HttpResponse;
+import top.javap.aurora.domain.AuroraResponse;
 import top.javap.aurora.exception.AuroraException;
 
 import java.util.concurrent.Callable;
@@ -13,7 +13,7 @@ import java.util.concurrent.FutureTask;
  * @description:
  * @date: 2023/4/11
  **/
-public class AuroraFuture<V> extends FutureTask<HttpResponse> {
+public class AuroraFuture<V> extends FutureTask<AuroraResponse> {
 
     private Class<V> returnType;
 

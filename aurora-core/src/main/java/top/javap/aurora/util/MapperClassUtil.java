@@ -10,7 +10,7 @@ import top.javap.aurora.annotation.Mapper;
 public final class MapperClassUtil {
 
     public static void checkInterface(Class<?> mapperClass) {
-        Assert.isTrue(mapperClass.isInterface(), mapperClass + " 必须是接口");
-        Assert.isTrue(mapperClass.isAnnotationPresent(Mapper.class), mapperClass + " 无@Mapper注解");
+        Assert.isTrue(mapperClass.isInterface(), mapperClass + " Must be an interface");
+        Assert.isTrue(mapperClass.isAnnotationPresent(Mapper.class), mapperClass + " no @Mapper annotation");
     }
 }

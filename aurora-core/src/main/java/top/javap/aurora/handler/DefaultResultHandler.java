@@ -3,7 +3,7 @@ package top.javap.aurora.handler;
 import com.alibaba.fastjson.JSON;
 import top.javap.aurora.convert.Converter;
 import top.javap.aurora.convert.ConverterFactory;
-import top.javap.aurora.domain.HttpResponse;
+import top.javap.aurora.domain.AuroraResponse;
 import top.javap.aurora.exception.AuroraException;
 import top.javap.aurora.executor.AuroraFuture;
 
@@ -23,11 +23,11 @@ public class DefaultResultHandler implements ResultHandler {
     }
 
     @Override
-    public <T> T handle(HttpResponse response, Class<T> resultType) {
+    public <T> T handle(AuroraResponse response, Class<T> resultType) {
         if (Objects.isNull(response) || Objects.isNull(resultType) || resultType.isAssignableFrom(Void.class) || resultType.isAssignableFrom(void.class)) {
             return null;
         }
-        if (resultType.isAssignableFrom(HttpResponse.class)) {
+        if (resultType.isAssignableFrom(AuroraResponse.class)) {
             return (T) response;
         }
         if (resultType.isAssignableFrom(AuroraFuture.class)) {

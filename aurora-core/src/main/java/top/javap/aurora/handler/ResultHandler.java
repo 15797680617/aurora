@@ -1,6 +1,6 @@
 package top.javap.aurora.handler;
 
-import top.javap.aurora.domain.HttpResponse;
+import top.javap.aurora.domain.AuroraResponse;
 
 /**
  * @Author: pch
@@ -9,6 +9,6 @@ import top.javap.aurora.domain.HttpResponse;
  */
 public interface ResultHandler {
 
-    <T> T handle(HttpResponse response, Class<T> resultType);
+    <T> T handle(AuroraResponse response, Class<T> resultType);
 
 }

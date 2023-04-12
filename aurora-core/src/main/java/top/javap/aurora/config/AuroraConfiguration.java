@@ -6,6 +6,7 @@ import top.javap.aurora.executor.HttpExecutor;
 import top.javap.aurora.executor.HttpExecutorFactory;
 import top.javap.aurora.handler.DefaultResultHandler;
 import top.javap.aurora.handler.ResultHandler;
+import top.javap.aurora.interceptor.InterceptorChain;
 import top.javap.aurora.reflection.AuroraMethodParser;
 import top.javap.aurora.reflection.DefaultAuroraMethodParser;
 
@@ -32,6 +33,7 @@ public final class AuroraConfiguration {
     private AuroraMethodParser auroraMethodParser = new DefaultAuroraMethodParser();
     private ConverterFactory converterFactory = new ConverterFactory();
     private ResultHandler resultHandler = new DefaultResultHandler(this.getConverterFactory());
+    private InterceptorChain interceptorChain = new InterceptorChain();
 
     public HttpClientEnum getHttpClientEnum() {
         return httpClientEnum;
@@ -91,5 +93,37 @@ public final class AuroraConfiguration {
 
     public long getReadTimeout() {
         return readTimeout;
+    }
+
+    public void setCorePoolSize(int corePoolSize) {
+        this.corePoolSize = corePoolSize;
+    }
+
+    public void setMaxPoolSize(int maxPoolSize) {
+        this.maxPoolSize = maxPoolSize;
+    }
+
+    public void setKeepAliveSeconds(int keepAliveSeconds) {
+        this.keepAliveSeconds = keepAliveSeconds;
+    }
+
+    public void setQueueSize(int queueSize) {
+        this.queueSize = queueSize;
+    }
+
+    public void setConnectTimeout(long connectTimeout) {
+        this.connectTimeout = connectTimeout;
+    }
+
+    public void setWriteTimeout(long writeTimeout) {
+        this.writeTimeout = writeTimeout;
+    }
+
+    public void setReadTimeout(long readTimeout) {
+        this.readTimeout = readTimeout;
+    }
+
+    public InterceptorChain interceptorChain() {
+        return interceptorChain;
     }
 }
