@@ -6,7 +6,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import org.jetbrains.annotations.NotNull;
 import top.javap.aurora.config.AuroraConfiguration;
 import top.javap.aurora.domain.AuroraRequest;
 import top.javap.aurora.domain.AuroraResponse;
@@ -61,12 +60,12 @@ public class OkHttpExecutor extends BaseHttpExecutor {
     public <V> void submit(AuroraRequest<V> request, Callback<V> callback) {
         httpClient.newCall(buildRequest(request)).enqueue(new okhttp3.Callback() {
             @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+            public void onFailure(Call call, IOException e) {
                 callback.onError(new AuroraException("request error", e));
             }
 
             @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+            public void onResponse(Call call, Response response) throws IOException {
                 callback.onSuccess(resultHandle(triggerAfter(request, toHttpResponse(response)), request.getResultType()));
             }
         });
@@ -79,7 +78,7 @@ public class OkHttpExecutor extends BaseHttpExecutor {
                 builder.get();
                 break;
             case POST:
-                builder.post(RequestBody.create(request.getBody(), MediaType.parse("application/json;charset=utf-8")));
+                builder.post(RequestBody.create(MediaType.parse("application/json;charset=utf-8"), request.getBody()));
                 break;
             default:
                 throw new AuroraException("invalid httoMethod:" + request.getMethod());
@@ -95,7 +94,7 @@ public class OkHttpExecutor extends BaseHttpExecutor {
         auroraResponse.setBody(response.body().string());
         auroraResponse.setCode(response.code());
         auroraResponse.setMessage(response.message());
-        response.headers().forEach(e -> auroraResponse.getHeaders().put(e.getFirst(), e.getSecond()));
+        response.headers().toMultimap().entrySet().forEach(e -> auroraResponse.getHeaders().put(e.getKey(), e.getValue().get(0)));
         return auroraResponse;
     }
 }

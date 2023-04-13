@@ -1,0 +1,7 @@
+aurora:
+  connectTimeout: 10000
+  writeTimeout: 10000
+  readTimeout: 10000
+  corePoolSize: 16
+  maxPoolSize: 100
+  httpClientEnum: OKHTTP

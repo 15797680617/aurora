@@ -1,6 +1,5 @@
 package top.javap.aurora.executor;
 
-import org.jetbrains.annotations.NotNull;
 import top.javap.aurora.config.AuroraConfiguration;
 import top.javap.aurora.domain.AuroraResponse;
 import top.javap.aurora.exception.AuroraException;
@@ -17,7 +16,7 @@ public class AuroraFuture<V> extends FutureTask<AuroraResponse> {
 
     private Class<V> returnType;
 
-    public AuroraFuture(@NotNull Callable callable, Class<V> returnType) {
+    public AuroraFuture(Callable callable, Class<V> returnType) {
         super(callable);
         this.returnType = returnType;
     }

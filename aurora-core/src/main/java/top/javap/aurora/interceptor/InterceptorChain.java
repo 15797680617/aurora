@@ -21,11 +21,15 @@ public class InterceptorChain implements AuroraInterceptor {
     }
 
     public InterceptorChain(Collection<AuroraInterceptor> interceptors) {
-        interceptors.addAll(interceptors);
+        this.interceptors.addAll(interceptors);
     }
 
     public void addInterceptor(AuroraInterceptor interceptor) {
         interceptors.add(interceptor);
+    }
+
+    public void addInterceptor(Collection<AuroraInterceptor> interceptors) {
+        this.interceptors.addAll(interceptors);
     }
 
     @Override

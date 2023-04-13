@@ -5,7 +5,7 @@
     <parent>
         <artifactId>aurora</artifactId>
         <groupId>top.javap.aurora</groupId>
-        <version>0.1</version>
+        <version>0.2-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -20,6 +20,11 @@
         <dependency>
             <groupId>top.javap.aurora</groupId>
             <artifactId>aurora-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
         </dependency>
     </dependencies>
 

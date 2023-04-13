@@ -7,7 +7,7 @@
     <groupId>top.javap.aurora</groupId>
     <artifactId>aurora</artifactId>
     <packaging>pom</packaging>
-    <version>0.1</version>
+    <version>0.2-SNAPSHOT</version>
     <name>aurora</name>
     <description>像调用本地方法一样调用HTTP接口</description>
     <url>https://gitee.com/panchanghe/aurora</url>
@@ -27,8 +27,9 @@
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
-        <java.version>8</java.version>
-        <aurora.version>0.1</aurora.version>
+        <aurora.version>0.2-SNAPSHOT</aurora.version>
+        <spring.version>5.3.24</spring.version>
+        <spring.boot.version>2.7.6</spring.boot.version>
     </properties>
 
     <scm>
@@ -56,29 +57,27 @@
                 <artifactId>aurora-spring</artifactId>
                 <version>${aurora.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.squareup.okhttp3</groupId>
+                <artifactId>okhttp</artifactId>
+                <version>3.14.9</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>1.2.83</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>3.12.0</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
     <profiles>
         <profile>
             <id>release</id>
-            <build>
-                <plugins>
-                    <!--                    <plugin>-->
-                    <!--                        <groupId>org.apache.maven.plugins</groupId>-->
-                    <!--                        <artifactId>maven-gpg-plugin</artifactId>-->
-                    <!--                        <version>1.6</version>-->
-                    <!--                        <executions>-->
-                    <!--                            <execution>-->
-                    <!--                                <phase>verify</phase>-->
-                    <!--                                <goals>-->
-                    <!--                                    <goal>sign</goal>-->
-                    <!--                                </goals>-->
-                    <!--                            </execution>-->
-                    <!--                        </executions>-->
-                    <!--                    </plugin>-->
-                </plugins>
-            </build>
             <distributionManagement>
                 <snapshotRepository>
                     <id>ossrh</id>

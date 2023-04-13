@@ -22,4 +22,10 @@ public final class Assert {
             throw new AuroraException(message);
         }
     }
+
+    public static void notEmpty(Object[] arr, String message) {
+        if (Objects.isNull(arr) || arr.length <= 0) {
+            throw new AuroraException(message);
+        }
+    }
 }
