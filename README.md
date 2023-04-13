@@ -53,6 +53,14 @@ public static void main(String[] args) throws Exception {
 ```
 
 #### 2.在Spring Boot中使用
+在启动类上，指定要扫描的Mapper包路径
+```java
+@SpringBootApplication
+@AuroraScan(scanPackages = "com.javap.example")
+public class AuroraApplication {
+    
+}
+```
 直接注入Mapper，即可使用。
 ```java
 @Autowired
