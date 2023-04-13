@@ -7,7 +7,7 @@
     <groupId>top.javap.aurora</groupId>
     <artifactId>aurora</artifactId>
     <packaging>pom</packaging>
-    <version>0.2-SNAPSHOT</version>
+    <version>0.2</version>
     <name>aurora</name>
     <description>像调用本地方法一样调用HTTP接口</description>
     <url>https://gitee.com/panchanghe/aurora</url>
@@ -27,7 +27,7 @@
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
-        <aurora.version>0.2-SNAPSHOT</aurora.version>
+        <aurora.version>0.2</aurora.version>
         <spring.version>5.3.24</spring.version>
         <spring.boot.version>2.7.6</spring.boot.version>
     </properties>
