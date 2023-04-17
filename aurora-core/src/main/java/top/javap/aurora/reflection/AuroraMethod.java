@@ -77,8 +77,8 @@ public class AuroraMethod<V> {
     }
 
     public Object invoke(Object[] args) {
-        final HttpExecutor httpExecutor = mapper.getConfiguration().getHttpExecutor();
         final AuroraRequest<V> request = buildAuroraRequest(args);
+        final HttpExecutor httpExecutor = mapper.getConfiguration().getHttpExecutor();
         if (triggerBefore(request, args)) {
             try {
                 if (InvokeMode.SYNC.equals(invokeMode)) {

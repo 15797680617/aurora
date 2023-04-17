@@ -23,7 +23,7 @@ public final class MethodUtil {
         return null;
     }
 
-    public static boolean fromObject(Method method) {
+    public static boolean declareFromObject(Method method) {
         return method.getDeclaringClass().isAssignableFrom(Object.class);
     }
 }

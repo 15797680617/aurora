@@ -5,7 +5,6 @@ import top.javap.aurora.convert.Converter;
 import top.javap.aurora.convert.ConverterFactory;
 import top.javap.aurora.domain.AuroraResponse;
 import top.javap.aurora.exception.AuroraException;
-import top.javap.aurora.executor.AuroraFuture;
 
 import java.util.Objects;
 
@@ -27,11 +26,8 @@ public class DefaultResultHandler implements ResultHandler {
         if (Objects.isNull(response) || Objects.isNull(resultType) || resultType.isAssignableFrom(Void.class) || resultType.isAssignableFrom(void.class)) {
             return null;
         }
-        if (resultType.isAssignableFrom(AuroraResponse.class)) {
+        if (AuroraResponse.class.isAssignableFrom(resultType)) {
             return (T) response;
-        }
-        if (resultType.isAssignableFrom(AuroraFuture.class)) {
-            System.err.println(resultType);
         }
         Converter<String, T> converter = converterFactory.getConverter(String.class, resultType);
         if (Objects.nonNull(converter)) {

@@ -37,6 +37,7 @@ public class OkHttpExecutor extends BaseHttpExecutor {
                 new ArrayBlockingQueue<>(configuration.getQueueSize())
         );
         httpClient = new OkHttpClient.Builder()
+                .callTimeout(configuration.getTimeout(), TimeUnit.MILLISECONDS)
                 .connectTimeout(configuration.getConnectTimeout(), TimeUnit.MILLISECONDS)
                 .writeTimeout(configuration.getWriteTimeout(), TimeUnit.MILLISECONDS)
                 .readTimeout(configuration.getReadTimeout(), TimeUnit.MILLISECONDS)

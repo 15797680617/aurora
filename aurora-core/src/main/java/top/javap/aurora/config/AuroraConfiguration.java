@@ -27,6 +27,7 @@ public final class AuroraConfiguration {
     private long connectTimeout = 5000L;
     private long writeTimeout = 5000L;
     private long readTimeout = 5000L;
+    private long timeout = 10000L;
 
 
     private HttpClientEnum httpClientEnum = HttpClientEnum.OKHTTP;
@@ -121,6 +122,14 @@ public final class AuroraConfiguration {
 
     public void setReadTimeout(long readTimeout) {
         this.readTimeout = readTimeout;
+    }
+
+    public long getTimeout() {
+        return timeout;
+    }
+
+    public void setTimeout(long timeout) {
+        this.timeout = timeout;
     }
 
     public InterceptorChain interceptorChain() {

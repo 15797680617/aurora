@@ -23,4 +23,9 @@ public interface GaoDeMapper {
 
     @Get("/weather/weatherInfo")
     void callback(@Param("key") String key, @Param("city") int city, Callback<WeatherErrorResult> cb);
+
+    default String defalutMethod() {
+        System.err.println("invoke default...");
+        return "abc";
+    }
 }
