@@ -2,6 +2,7 @@ package top.javap.aurora.example;
 
 import com.alibaba.fastjson.JSON;
 import top.javap.aurora.Aurora;
+import top.javap.aurora.enums.HttpClientEnum;
 import top.javap.aurora.example.api.UomgMapper;
 import top.javap.aurora.example.result.MusicResult;
 import top.javap.aurora.example.result.QingHuaResult;
@@ -20,11 +21,11 @@ public class SimpleExample {
     public static void main(String[] args) throws Exception {
 //        Aurora.config().setCorePoolSize(16);
 //        Aurora.config().interceptorChain().addInterceptor(new LogInterceptor());
-//        Aurora.config().setHttpClientEnum(HttpClientEnum.APACHE);
+        Aurora.config().setHttpClientEnum(HttpClientEnum.APACHE);
         UomgMapper mapper = Aurora.getInstance(UomgMapper.class);
 //        qingHua(mapper);
 //        qingHuaOnFuture(mapper);
-//        qingHuaOnCallback(mapper);
+        qingHuaOnCallback(mapper);
 //        music(mapper);
     }
 

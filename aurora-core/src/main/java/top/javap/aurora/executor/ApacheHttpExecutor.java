@@ -4,7 +4,9 @@ import org.apache.http.Header;
 import org.apache.http.HeaderIterator;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
@@ -96,11 +98,23 @@ public class ApacheHttpExecutor extends BaseHttpExecutor {
 
     @Override
     public <V> AuroraFuture<V> submit(AuroraRequest<V> request) {
-        return null;
+        AuroraFuture future = new AuroraFuture(() -> execute(request), request.getResultType());
+        executor.submit(future);
+        return future;
     }
 
     @Override
     public <V> void submit(AuroraRequest<V> request, Callback<V> callback) {
-
+        try {
+            client.execute(buildRequest(request), new ResponseHandler<Void>() {
+                @Override
+                public Void handleResponse(HttpResponse httpResponse) throws ClientProtocolException, IOException {
+                    callback.onSuccess(resultHandle(triggerAfter(request, toAuroraResponse(httpResponse)), request.getResultType()));
+                    return null;
+                }
+            });
+        } catch (IOException e) {
+            throw new AuroraException("IOException", e);
+        }
     }
 }
