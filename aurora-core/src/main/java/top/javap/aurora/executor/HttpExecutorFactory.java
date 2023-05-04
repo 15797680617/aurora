@@ -34,7 +34,7 @@ public final class HttpExecutorFactory {
         if (HttpClientEnum.OKHTTP.equals(clientEnum)) {
             return new OkHttpExecutor(configuration);
         } else if (HttpClientEnum.APACHE.equals(clientEnum)) {
-            throw new AuroraException("not supported HttpClientEnum:" + clientEnum);
+            return new ApacheHttpExecutor(configuration);
         } else {
             throw new AuroraException("invalid HttpClientEnum:" + clientEnum);
         }

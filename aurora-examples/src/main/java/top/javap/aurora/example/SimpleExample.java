@@ -20,10 +20,12 @@ public class SimpleExample {
     public static void main(String[] args) throws Exception {
 //        Aurora.config().setCorePoolSize(16);
 //        Aurora.config().interceptorChain().addInterceptor(new LogInterceptor());
+//        Aurora.config().setHttpClientEnum(HttpClientEnum.APACHE);
         UomgMapper mapper = Aurora.getInstance(UomgMapper.class);
 //        qingHua(mapper);
 //        qingHuaOnFuture(mapper);
-        qingHuaOnCallback(mapper);
+//        qingHuaOnCallback(mapper);
+//        music(mapper);
     }
 
     static void music(UomgMapper mapper) {
