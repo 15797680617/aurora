@@ -1,6 +1,5 @@
 package top.javap.aurora.annotation;
 
-
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -9,9 +8,10 @@ import java.lang.annotation.Target;
 
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-@Api(method = "post")
-public @interface Post {
+@Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE})
+public @interface Api {
 
-    String value();
+    String method();
+
+    String url() default "";
 }

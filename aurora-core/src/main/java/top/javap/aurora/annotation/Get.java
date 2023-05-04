@@ -10,6 +10,7 @@ import java.lang.annotation.Target;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
+@Api(method = "get")
 public @interface Get {
 
     String value();

@@ -35,7 +35,7 @@ public class MapperProxy<T> implements InvocationHandler {
         if (MethodUtil.declareFromObject(method)) {
             return method.invoke(this, args);
         }
-        return AuroraMethodFactory.getAuroraMethod(mapper, method).invoke(args);
+        return AuroraMethodFactory.getMethod(mapper, method).invoke(args);
     }
 
     private Object invokeDefaultMethod(Object proxy, Method method, Object[] args) {

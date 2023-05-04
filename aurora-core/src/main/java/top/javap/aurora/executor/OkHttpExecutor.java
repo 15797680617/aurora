@@ -25,11 +25,11 @@ import java.util.concurrent.TimeUnit;
  **/
 public class OkHttpExecutor extends BaseHttpExecutor {
     private final OkHttpClient httpClient;
-    private final ExecutorService executorService;
+    private final ExecutorService executor;
 
     public OkHttpExecutor(AuroraConfiguration configuration) {
         super(configuration);
-        executorService = new ThreadPoolExecutor(
+        executor = new ThreadPoolExecutor(
                 configuration.getCorePoolSize(),
                 configuration.getMaxPoolSize(),
                 configuration.getKeepAliveSeconds(),
@@ -53,7 +53,7 @@ public class OkHttpExecutor extends BaseHttpExecutor {
     @Override
     public AuroraFuture submit(AuroraRequest request) {
         AuroraFuture future = new AuroraFuture(() -> execute(request), request.getResultType());
-        executorService.submit(future);
+        executor.submit(future);
         return future;
     }
 

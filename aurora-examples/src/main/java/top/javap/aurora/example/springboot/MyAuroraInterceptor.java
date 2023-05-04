@@ -1,4 +1,4 @@
-package top.javap.aurora.example.spring;
+package top.javap.aurora.example.springboot;
 
 import org.springframework.stereotype.Component;
 import top.javap.aurora.domain.AuroraRequest;
@@ -23,6 +23,5 @@ public class MyAuroraInterceptor implements AuroraInterceptor {
     @Override
     public <V> void after(AuroraRequest<V> request, AuroraResponse response) {
         System.err.println("after");
-        System.err.println(response.getHeaders());
     }
 }

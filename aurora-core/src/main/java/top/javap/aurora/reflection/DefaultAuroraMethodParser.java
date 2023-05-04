@@ -1,5 +1,6 @@
 package top.javap.aurora.reflection;
 
+import top.javap.aurora.annotation.Api;
 import top.javap.aurora.annotation.Get;
 import top.javap.aurora.annotation.Header;
 import top.javap.aurora.annotation.Param;
@@ -66,6 +67,9 @@ public class DefaultAuroraMethodParser implements AuroraMethodParser {
     private String getUrl(Method method) {
         String baseUrl = method.getDeclaringClass().getAnnotation(top.javap.aurora.annotation.Mapper.class).baseUrl();
         for (Annotation annotation : method.getAnnotations()) {
+            if (annotation instanceof Api) {
+                return baseUrl + ((Api) annotation).url();
+            }
             if (annotation instanceof Get) {
                 return baseUrl + ((Get) annotation).value();
             }

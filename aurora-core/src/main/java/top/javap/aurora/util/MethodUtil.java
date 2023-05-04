@@ -1,9 +1,10 @@
 package top.javap.aurora.util;
 
-import top.javap.aurora.annotation.Get;
-import top.javap.aurora.annotation.Post;
+import top.javap.aurora.annotation.Api;
 import top.javap.aurora.enums.HttpMethod;
+import top.javap.aurora.exception.AuroraException;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
 /**
@@ -14,13 +15,15 @@ import java.lang.reflect.Method;
 public final class MethodUtil {
 
     public static HttpMethod getHttpMethod(Method method) {
-        if (method.isAnnotationPresent(Get.class)) {
-            return HttpMethod.GET;
+        if (method.isAnnotationPresent(Api.class)) {
+            return HttpMethod.getByName(((Api) method.getAnnotation(Api.class)).method());
         }
-        if (method.isAnnotationPresent(Post.class)) {
-            return HttpMethod.POST;
+        for (Annotation annotation : method.getAnnotations()) {
+            if (annotation.annotationType().isAnnotationPresent(Api.class)) {
+                return HttpMethod.getByName(((Api) annotation.annotationType().getAnnotation(Api.class)).method());
+            }
         }
-        return null;
+        throw new AuroraException("invalid httpMethod");
     }
 
     public static boolean declareFromObject(Method method) {

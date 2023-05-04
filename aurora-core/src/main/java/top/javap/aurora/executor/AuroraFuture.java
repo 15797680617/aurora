@@ -25,7 +25,7 @@ public class AuroraFuture<V> extends FutureTask<AuroraResponse> {
         try {
             return (V) AuroraConfiguration.configuration().getResultHandler().handle(get(), returnType);
         } catch (Exception e) {
-            throw new AuroraException("Result fetch failure", e);
+            throw new AuroraException("result fetch failure", e);
         }
     }
 }

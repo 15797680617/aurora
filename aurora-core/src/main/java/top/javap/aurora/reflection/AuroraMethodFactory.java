@@ -15,11 +15,12 @@ import java.util.concurrent.ConcurrentMap;
 public final class AuroraMethodFactory {
 
     private static final ConcurrentMap<Method, AuroraMethod> METHOD_CACHE = new ConcurrentHashMap<>();
+    private static final Object MUTEX = new Object();
 
-    public static AuroraMethod getAuroraMethod(Mapper mapper, Method method) {
+    public static AuroraMethod getMethod(Mapper mapper, Method method) {
         AuroraMethod auroraMethod = METHOD_CACHE.get(method);
         if (Objects.isNull(auroraMethod)) {
-            synchronized (METHOD_CACHE) {
+            synchronized (MUTEX) {
                 auroraMethod = METHOD_CACHE.get(method);
                 if (Objects.isNull(auroraMethod)) {
                     METHOD_CACHE.put(method, auroraMethod = createAuroraMethod(mapper, method));

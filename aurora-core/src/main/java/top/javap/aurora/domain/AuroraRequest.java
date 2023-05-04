@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * 对一次HTTP请求的封装
+ *
  * @author: pch
  * @description:
  * @date: 2023/4/10
