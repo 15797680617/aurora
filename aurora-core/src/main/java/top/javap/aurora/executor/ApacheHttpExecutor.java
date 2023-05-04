@@ -7,11 +7,12 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import top.javap.aurora.config.AuroraConfiguration;
 import top.javap.aurora.domain.AuroraRequest;
@@ -46,7 +47,11 @@ public class ApacheHttpExecutor extends BaseHttpExecutor {
                 TimeUnit.SECONDS,
                 new ArrayBlockingQueue<>(configuration.getQueueSize())
         );
-        client = HttpClientBuilder.create().build();
+        RequestConfig requestConfig = RequestConfig.custom()
+                .setConnectTimeout((int) configuration.getConnectTimeout())
+                .setSocketTimeout((int) configuration.getReadTimeout())
+                .build();
+        client = HttpClients.custom().setDefaultRequestConfig(requestConfig).build();
     }
 
 

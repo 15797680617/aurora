@@ -21,7 +21,7 @@ public class SimpleExample {
     public static void main(String[] args) throws Exception {
 //        Aurora.config().setCorePoolSize(16);
 //        Aurora.config().interceptorChain().addInterceptor(new LogInterceptor());
-        Aurora.config().setHttpClientEnum(HttpClientEnum.APACHE);
+        Aurora.config().setHttpClientEnum(HttpClientEnum.OKHTTP);
         UomgMapper mapper = Aurora.getInstance(UomgMapper.class);
 //        qingHua(mapper);
 //        qingHuaOnFuture(mapper);
