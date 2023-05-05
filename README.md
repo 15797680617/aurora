@@ -152,23 +152,21 @@ public class YourInterceptor implements AuroraInterceptor {
 
 ### 调用方式
 Aurora支持三种调用方式
-1. SYNC：同步调用
-2. FUTURE：Future方式
-3. CALLBACK：回调方式
-
-1、默认是SYNC，当前线程会阻塞等待HTTP接口完成响应
+#### SYNC
+默认的调用方式，即同步调用，当前线程会阻塞等待HTTP接口完成响应
 ```java
 @Get("/your/api")
 Result sync();
 ```
 
-2、要想使用FUTURE模式，直接把返回类型声明为AuroraFuture即可
+#### FUTURE
+Future异步调用，方法调用会立马返回，后续通过`AuroraFuture`对象获取结果。要想使用FUTURE模式，只需把返回类型声明为AuroraFuture即可
 ```java
 @Get("/your/api")
 AuroraFuture<Result> future();
 ```
-
-3、FUTURE模式的缺点是要获取结果只能是阻塞/轮询的方式，也许你可以试试更加高效的CALLBACK模式，只需添加一个Callback类型的参数即可。
+#### CALLBACK
+FUTURE模式的缺点是要获取结果只能是阻塞/轮询的方式，也许你可以试试更加高效的CALLBACK模式，只需添加一个Callback类型的参数即可
 > 返回类型只能是void，因为是异步执行，即使声明为其它类型，也只能获取到null。
 ```java
 @Get("/your/api")
