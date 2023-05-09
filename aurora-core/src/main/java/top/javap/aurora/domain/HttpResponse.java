@@ -8,7 +8,7 @@ import java.util.Map;
  * @description:
  * @date: 2023/3/23
  **/
-public class AuroraResponse {
+public class HttpResponse {
 
     private String body;
     private String message;

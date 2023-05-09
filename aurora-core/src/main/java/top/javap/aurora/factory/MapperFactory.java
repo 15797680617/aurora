@@ -22,20 +22,20 @@ public class MapperFactory {
         auroraConfiguration = AuroraConfiguration.configuration();
     }
 
-    public static <T> T getInstance(Class<T> mapperClass) {
+    public static <T> T getMapper(Class<T> mapperClass) {
         Object proxy = PROXY_CACHE.get(mapperClass);
         if (Objects.isNull(proxy)) {
             synchronized (MUTEX) {
                 proxy = PROXY_CACHE.get(mapperClass);
                 if (Objects.isNull(proxy)) {
-                    PROXY_CACHE.put(mapperClass, proxy = createInstance(mapperClass));
+                    PROXY_CACHE.put(mapperClass, proxy = createMapper(mapperClass));
                 }
             }
         }
         return (T) proxy;
     }
 
-    private static <T> T createInstance(Class<T> mapperClass) {
+    private static <T> T createMapper(Class<T> mapperClass) {
         return new Mapper<>(mapperClass, auroraConfiguration).getProxy();
     }
 

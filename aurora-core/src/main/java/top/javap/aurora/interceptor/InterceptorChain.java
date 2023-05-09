@@ -1,8 +1,7 @@
 package top.javap.aurora.interceptor;
 
-import top.javap.aurora.domain.AuroraRequest;
-import top.javap.aurora.domain.AuroraResponse;
-import top.javap.aurora.reflection.AuroraMethod;
+import top.javap.aurora.domain.HttpResponse;
+import top.javap.aurora.invoke.Invocation;
 
 import java.util.Collection;
 import java.util.List;
@@ -33,9 +32,9 @@ public class InterceptorChain implements AuroraInterceptor {
     }
 
     @Override
-    public <V> boolean before(AuroraMethod<V> method, AuroraRequest<V> request, Object[] args) {
+    public <V> boolean before(Invocation invocation) {
         for (AuroraInterceptor interceptor : interceptors) {
-            if (!interceptor.before(method, request, args)) {
+            if (!interceptor.before(invocation)) {
                 return false;
             }
         }
@@ -43,9 +42,9 @@ public class InterceptorChain implements AuroraInterceptor {
     }
 
     @Override
-    public <V> void after(AuroraRequest<V> request, AuroraResponse response) {
+    public <V> void after(Invocation invocation, HttpResponse response) {
         for (AuroraInterceptor interceptor : interceptors) {
-            interceptor.after(request, response);
+            interceptor.after(invocation, response);
         }
     }
 }

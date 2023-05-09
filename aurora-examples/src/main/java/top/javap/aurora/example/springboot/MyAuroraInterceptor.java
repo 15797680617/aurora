@@ -1,10 +1,9 @@
 package top.javap.aurora.example.springboot;
 
 import org.springframework.stereotype.Component;
-import top.javap.aurora.domain.AuroraRequest;
-import top.javap.aurora.domain.AuroraResponse;
+import top.javap.aurora.domain.HttpResponse;
 import top.javap.aurora.interceptor.AuroraInterceptor;
-import top.javap.aurora.reflection.AuroraMethod;
+import top.javap.aurora.invoke.Invocation;
 
 /**
  * @author: pch
@@ -15,13 +14,13 @@ import top.javap.aurora.reflection.AuroraMethod;
 public class MyAuroraInterceptor implements AuroraInterceptor {
 
     @Override
-    public <V> boolean before(AuroraMethod<V> method, AuroraRequest<V> request, Object[] args) {
+    public <V> boolean before(Invocation invocation) {
         System.err.println("before");
         return true;
     }
 
     @Override
-    public <V> void after(AuroraRequest<V> request, AuroraResponse response) {
+    public <V> void after(Invocation invocation, HttpResponse response) {
         System.err.println("after");
     }
 }

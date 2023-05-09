@@ -6,11 +6,11 @@ import java.lang.reflect.Method;
 
 /**
  * @Author: pch
- * @Date: 2023/4/7 15:26
+ * @Date: 2023/5/6 16:24
  * @Description:
  */
-public interface AuroraMethodParser {
+public interface MethodMetadataReader {
 
-    <V> AuroraMethod<V> parse(Mapper mapper, Method method);
+    MethodMetadata getMethodMetadata(Mapper mapper, Method method);
 
 }

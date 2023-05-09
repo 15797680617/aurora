@@ -1,8 +1,7 @@
 package top.javap.aurora.interceptor;
 
-import top.javap.aurora.domain.AuroraRequest;
-import top.javap.aurora.domain.AuroraResponse;
-import top.javap.aurora.reflection.AuroraMethod;
+import top.javap.aurora.domain.HttpResponse;
+import top.javap.aurora.invoke.Invocation;
 
 /**
  * @Author: pch
@@ -11,11 +10,11 @@ import top.javap.aurora.reflection.AuroraMethod;
  */
 public interface AuroraInterceptor {
 
-    default <V> boolean before(AuroraMethod<V> method, AuroraRequest<V> request, Object[] args) {
+    default <V> boolean before(Invocation invocation) {
         return true;
     }
 
-    default <V> void after(AuroraRequest<V> request, AuroraResponse response) {
+    default <V> void after(Invocation invocation, HttpResponse response) {
 
     }
 }

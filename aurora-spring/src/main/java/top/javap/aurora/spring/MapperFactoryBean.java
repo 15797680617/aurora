@@ -18,7 +18,7 @@ public class MapperFactoryBean<T> implements FactoryBean {
 
     @Override
     public Object getObject() throws Exception {
-        return Aurora.getInstance(mapperInterface);
+        return Aurora.getMapper(mapperInterface);
     }
 
     @Override

@@ -1,6 +1,6 @@
 package top.javap.aurora.handler;
 
-import top.javap.aurora.domain.AuroraResponse;
+import top.javap.aurora.domain.HttpResponse;
 
 /**
  * 结果处理
@@ -11,6 +11,6 @@ import top.javap.aurora.domain.AuroraResponse;
  */
 public interface ResultHandler {
 
-    <T> T handle(AuroraResponse response, Class<T> resultType);
+    <T> T handle(HttpResponse response, Class<T> resultType);
 
 }

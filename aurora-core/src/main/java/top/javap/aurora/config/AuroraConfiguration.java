@@ -2,13 +2,19 @@ package top.javap.aurora.config;
 
 import top.javap.aurora.convert.ConverterFactory;
 import top.javap.aurora.enums.HttpClientEnum;
-import top.javap.aurora.executor.HttpExecutor;
-import top.javap.aurora.executor.HttpExecutorFactory;
 import top.javap.aurora.handler.DefaultResultHandler;
 import top.javap.aurora.handler.ResultHandler;
 import top.javap.aurora.interceptor.InterceptorChain;
-import top.javap.aurora.reflection.AuroraMethodParser;
-import top.javap.aurora.reflection.DefaultAuroraMethodParser;
+import top.javap.aurora.invoke.Invoker;
+import top.javap.aurora.invoke.InvokerFactory;
+import top.javap.aurora.reflection.MethodMetadataReader;
+import top.javap.aurora.reflection.ReflectionMethodMetadataReader;
+
+import java.util.Objects;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author: pch
@@ -30,8 +36,9 @@ public final class AuroraConfiguration {
     private long timeout = 10000L;
 
 
+    private ExecutorService executorService;
     private HttpClientEnum httpClientEnum = HttpClientEnum.OKHTTP;
-    private AuroraMethodParser auroraMethodParser = new DefaultAuroraMethodParser();
+    private MethodMetadataReader methodMetadataReader = new ReflectionMethodMetadataReader();
     private ConverterFactory converterFactory = new ConverterFactory();
     private ResultHandler resultHandler = new DefaultResultHandler(this.getConverterFactory());
     private InterceptorChain interceptorChain = new InterceptorChain();
@@ -44,12 +51,12 @@ public final class AuroraConfiguration {
         this.httpClientEnum = httpClientEnum;
     }
 
-    public AuroraMethodParser getAuroraMethodParser() {
-        return auroraMethodParser;
+    public MethodMetadataReader getMethodMetadataReader() {
+        return methodMetadataReader;
     }
 
-    public void setHttpMethodParser(AuroraMethodParser auroraMethodParser) {
-        this.auroraMethodParser = auroraMethodParser;
+    public void setMethodMetadataReader(MethodMetadataReader methodMetadataReader) {
+        this.methodMetadataReader = methodMetadataReader;
     }
 
     public ResultHandler getResultHandler() {
@@ -60,8 +67,8 @@ public final class AuroraConfiguration {
         return converterFactory;
     }
 
-    public HttpExecutor getHttpExecutor() {
-        return HttpExecutorFactory.getHttpExecutor(httpClientEnum, this);
+    public Invoker getInvoker() {
+        return InvokerFactory.getInvoker(this);
     }
 
     public static AuroraConfiguration configuration() {
@@ -134,5 +141,16 @@ public final class AuroraConfiguration {
 
     public InterceptorChain interceptorChain() {
         return interceptorChain;
+    }
+
+    public ExecutorService getExecutorService() {
+        if (Objects.isNull(executorService)) {
+            synchronized (this) {
+                if (Objects.isNull(executorService)) {
+                    executorService = new ThreadPoolExecutor(corePoolSize, maxPoolSize, keepAliveSeconds, TimeUnit.SECONDS, new ArrayBlockingQueue<>(queueSize));
+                }
+            }
+        }
+        return executorService;
     }
 }

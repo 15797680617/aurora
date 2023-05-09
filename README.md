@@ -139,12 +139,12 @@ Aurora.config().interceptorChain().addInterceptor(new YourInterceptor());
 public class YourInterceptor implements AuroraInterceptor {
 
     @Override
-    public <V> boolean before(AuroraMethod<V> method, AuroraRequest<V> request, Object[] args) {
+    public <V> boolean before(Invocation invocation) {
         return true;
     }
 
     @Override
-    public <V> void after(AuroraRequest<V> request, AuroraResponse response) {
+    public <V> void after(Invocation invocation, AuroraResponse response) {
 
     }
 }
