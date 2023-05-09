@@ -2,7 +2,7 @@
 
 Aurora是一个轻量级、高性能的HTTP客户端工具。它旨在简化开发流程、改善代码质量和提高开发效率，让HTTP接口调用像本地方法一样简单！
 
-![Aurora Logo](https://s1.ax1x.com/2023/04/13/ppxEtJg.png)
+![Aurora Logo](https://www.hualigs.cn/image/645a2c54163a5.jpg)
 
 ## 特性
 
